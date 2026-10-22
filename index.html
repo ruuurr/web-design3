@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0814">
+  <title>NEON / СЛОВА</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="mark">N</span> NEON <span class="muted">/ СЛОВА</span></a>
+    <span class="status"><i></i><span id="connection">Firebase не настроен</span></span>
+  </header>
+  <main class="shell">
+    <section id="lobby" class="lobby">
+      <div class="hero">
+        <p class="eyebrow">ИГРА ДЛЯ УМА · ONLINE</p>
+        <h1>Собирай слова.<br><span>Соединяй смыслы.</span></h1>
+        <p class="lead">Неоновый кроссворд: играй один, объединяйся с друзьями или соревнуйся на скорость.</p>
+        <div class="features">
+          <span>⌘ Комнаты по коду</span>
+          <span>✳ Онлайн-синхронизация</span>
+          <span>◇ 3 уровня сложности</span>
+        </div>
+      </div>
+      <div class="panel lobby-panel">
+  <p class="eyebrow">НАЧАТЬ ИГРУ</p>
+  <h2>Играй по-своему</h2>
+  <p class="lead">
+    Решай кроссворды самостоятельно или приглашай друзей
+    в онлайн-комнату.
+  </p>
+
+  <button id="openCreate" class="btn primary">
+    Создать комнату ↗
+  </button>
+
+  <label for="nickname">Твой никнейм</label>
+  <input id="nickname" maxlength="18" placeholder="Например, violetfox">
+
+  <label for="code">Код комнаты</label>
+  <div class="join">
+    <input id="code" maxlength="8" placeholder="8-значный код">
+    <button id="join" class="btn secondary">Войти</button>
+  </div>
+
+  <p class="fine">
+    Без регистрации: используется анонимная сессия Firebase.
+  </p>
+  <p id="lobbyMsg" class="message"></p>
+</div>
+    </section>
+    <section class="puzzle-library" id="puzzleLibrary">
+      <div class="library-heading">
+        <div>
+          <p class="eyebrow">ВЫБЕРИ СВОЮ ПАРТИЮ</p>
+          <h2>Кроссворды <span>по настроению</span></h2>
+          <p class="muted">Выбери тему и сложность фильтрами, затем конкретный кроссворд. После выбора можно начать игру или создать комнату.</p>
+        </div>
+        <div class="library-filters">
+          <select id="libraryTopic">
+            <option value="all">Все темы</option>
+            <option value="mixed">Микс тем</option>
+            <option value="design">Дизайн и IT</option>
+            <option value="nature">Природа</option>
+            <option value="space">Космос</option>
+            <option value="culture">Культура</option>
+            <option value="food">Еда</option>
+            <option value="music">Музыка</option>
+          </select>
+          <select id="libraryDifficulty">
+            <option value="all">Любая сложность</option>
+            <option value="easy">Лёгкая</option>
+            <option value="medium">Средняя</option>
+            <option value="hard">Сложная</option>
+          </select>
+        </div>
+      </div>
+      <div class="selected-puzzle" id="selectedPuzzle">Кроссворд не выбран — нажми на карточку ниже.</div>
+      <div class="catalog-actions">
+        <button id="solo" class="btn secondary">Начать одиночную игру →</button>
+        <button id="create" class="btn primary">Создать комнату ↗</button>
+      </div>
+      <div class="preview-grid" id="previewGrid"></div>
+    </section>
+    <section class="history-section" id="history">
+      <div class="history-heading">
+        <div>
+          <p class="eyebrow">ТВОЙ ПРОГРЕСС</p>
+          <h2>История <span>прохождений</span></h2>
+          <p class="muted">Здесь сохраняются полностью решённые кроссворды на этом устройстве.</p>
+        </div>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </section>
+    <section id="game" class="hidden">
+      <div class="game-head">
+        <div>
+          <p class="eyebrow" id="roomLabel">КРОССВОРД</p>
+          <h2 id="gameTitle">Командный кроссворд</h2>
+          <p class="muted" id="subtitle"></p>
+        </div>
+        <div class="actions">
+          <button id="copy" class="btn secondary small">Код: <b id="codeLabel">СОЛО</b> ⧉</button>
+          <button id="leave" class="btn quiet small">Выйти</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div><small>ЗАПОЛНЕНО</small><b id="progress">0%</b></div>
+        <div><small>ОЧКИ</small><b id="score">0</b></div>
+        <div><small>ВРЕМЯ</small><b id="timer">00:00</b></div>
+        <div><small>ИГРОКИ</small><b id="playersCount">1</b></div>
+      </div>
+      <div class="layout">
+        <div class="panel board-panel">
+          <div class="boardbar">
+            <span><i class="live"></i> <span id="sync">Локальная игра</span></span>
+            <button id="check" class="btn secondary small">Проверить слова</button>
+          </div>
+          <div id="board" class="board"></div>
+          <p class="legend">■ Выбранное слово <span>■ Заполненная буква</span></p>
+          <p id="gameMsg" class="message"></p>
+        </div>
+        <aside>
+          <div class="panel clues">
+            <div class="side-head">
+              <h3>Вопросы</h3>
+              <small id="wordCount"></small>
+            </div>
+            <div class="tabs">
+              <button class="active" data-dir="across">По горизонтали</button>
+              <button data-dir="down">По вертикали</button>
+            </div>
+            <div id="clues" class="clue-list"></div>
+          </div>
+          <div class="panel players">
+            <div class="side-head">
+              <h3>Игроки</h3>
+              <small class="live-text">LIVE</small>
+            </div>
+            <div id="playerList"></div>
+          </div>
+          <div class="panel tools">
+            <button id="reveal" class="btn quiet">Открыть букву ✧</button>
+            <button id="new" class="btn quiet">Новый кроссворд ↻</button>
+            <button id="pause" class="btn quiet">Пауза таймера Ⅱ</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+    <footer>
+      <b>NEON / СЛОВА</b>
+      <span>Думай иначе. Находи пересечения.</span>
+      <span>HTML · CSS · JS · FIREBASE</span>
+    </footer>
+  </main>
+
+  <div id="createModal" class="modal hidden">
+  <div class="modal-backdrop" data-close-modal></div>
+
+  <section
+    class="modal-card panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+  >
+    <button
+      type="button"
+      class="modal-close"
+      id="closeCreate"
+      aria-label="Закрыть"
+    >×</button>
+
+    <p class="eyebrow">НОВАЯ ПАРТИЯ</p>
+    <h2 id="modalTitle">Создать комнату</h2>
+    <p class="modal-description">
+      Выбери тему, сложность и режим. После создания получишь код,
+      которым можно поделиться с друзьями.
+    </p>
+
+    <label for="createTopic">Тема кроссворда</label>
+    <select id="createTopic">
+      <option value="mixed">Микс тем</option>
+      <option value="design">Дизайн и IT</option>
+      <option value="nature">Природа</option>
+      <option value="space">Космос</option>
+      <option value="culture">Культура</option>
+      <option value="food">Еда</option>
+      <option value="music">Музыка</option>
+    </select>
+
+    <label for="createDifficulty">Сложность</label>
+    <select id="createDifficulty">
+      <option value="easy">Лёгкая</option>
+      <option value="medium" selected>Средняя</option>
+      <option value="hard">Сложная</option>
+    </select>
+
+    <label>Режим игры</label>
+    <div class="modes">
+      <label>
+        <input type="radio" name="createMode" value="coop" checked>
+        <span>
+          <b>Вместе</b>
+          <small>Общие ответы</small>
+        </span>
+      </label>
+
+      <label>
+        <input type="radio" name="createMode" value="competitive">
+        <span>
+          <b>Соревнование</b>
+          <small>Личный прогресс</small>
+        </span>
+      </label>
+    </div>
+
+    <p id="createMsg" class="message"></p>
+
+    <div class="modal-actions">
+      <button id="cancelCreate" class="btn secondary" type="button">
+        Отмена
+      </button>
+      <button id="confirmCreate" class="btn primary" type="button">
+        Создать комнату →
+      </button>
+    </div>
+  </section>
+</div>
+  <div id="toast" class="toast"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
